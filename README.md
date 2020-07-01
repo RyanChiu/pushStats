@@ -10,4 +10,19 @@ custom_producer.factory=com.pushstats.producerfactory.CustomProducerFactory<br/>
 custom_producer.server_id=23<br/>
 custom_producer.destination_URL=http://localhost/destination/api<br/><br/>
 3.Get into your maxwell directory, and restart/start your maxwell like "bin/maxwell" (the same effect with "bin/maxwell --config ./config.properties")<br/><br/>
-4.Try to fire a test within mysql, such as "insert sometable (name, time, stuff) values ("xxx", now(), "stuff like that");", the "maxwell" will show the "changed" data on the screen and push the "data" part out by being params of the "destination_URL".
+4.Try to fire a test within mysql, such as "insert sometable (name, time, stuff) values ("xxx", now(), "stuff like that");", the "maxwell" will show the "changed" data on the screen and push the "data" part out by being params of the "destination_URL".<br/><br/>
+
+<b>[MAXWELL & SETTINGS]</b>(http://maxwells-daemon.io/quickstart)
+1.download maxwell:<br/>
+curl -sLo - https://github.com/zendesk/maxwell/releases/download/v1.27.0/maxwell-1.27.0.tar.gz \
+       | tar zxvf -;
+cd maxwell-1.27.0;<br/><br/>
+2.config mysql, insert into the following lines (such as "vi my.cnf" or "vi /etc/mysql/mysql.conf.d/mysql.cnf"): <br/>
+#[mysqld]<br/>
+server_id=1<br/>
+log-bin=master<br/>
+binlog_format=row<br/><br/>
+3.create user "maxwell" in mysql: <br/>
+mysql> CREATE USER 'maxwell'@'%' IDENTIFIED BY 'XXXXXX';<br/>
+mysql> GRANT ALL ON maxwell.* TO 'maxwell'@'%';<br/>
+mysql> GRANT SELECT, REPLICATION CLIENT, REPLICATION SLAVE ON *.* TO 'maxwell'@'%';<br/><br/>
