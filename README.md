@@ -1,5 +1,5 @@
 # pushStats
-A maven project which pushes data out by implementing customized producer based Maxwell.
+A maven project which pushes data out by implementing customized producer based on Maxwell.
 
 <b>[HOW IT WORKS]</b><br/>
 1.Export the project into a jar file with "eclipse", for example "postpush.jar", and move/copy it into "maxwell/lib".<br/><br/>
