@@ -31,5 +31,6 @@ bin/maxwell --user='maxwell' --password='XXXXXX' --host='127.0.0.1' --config con
 --config.properties will be like in [HOW IT WORKS].2, but could add some following lines:<br/>
 #[misc]<br/>
 filter=exclude:*.*,include:db1.table1,include:db2.table2<br/>
-#[producer] #list the fields which won't be posted below, separated with ","<br/>
-custom_producer.fieldsExcluded=db1.table1.field1,db2.table2.field2
+#[producer]<br/>
+custom_producer.DB_URL_pairs=dbname1|http://some.where.com/some/api,dbname2|http://some.where.else.com/some/other/api # pairs of "DB|URL", separated by ",", means only the changes in DB will be posted to the URL<br/>
+custom_producer.fieldsExcluded=db1.table1.field1,db2.table2.field2 # list of the fields which won't be posted, separated by ","
