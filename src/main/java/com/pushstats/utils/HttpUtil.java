@@ -22,8 +22,14 @@ import org.apache.http.util.EntityUtils;
 import com.zendesk.maxwell.row.RowMap;
 
 public class HttpUtil {
-	public void doPost(String url, RowMap row, String[] excluded){
-
+	public void doPost(String[] pair, RowMap row, String[] excluded){
+		String db = pair[0];
+		String url = pair[1];
+		if (!db.equals(row.getDatabase())) {
+			System.out.println("No '" + db + "|" + url + "' pair there, passed.");
+			return;
+		}
+		
         CloseableHttpClient httpclient = HttpClientBuilder.create().build();
         HttpPost post = new HttpPost(url);
         List<NameValuePair> formparams = new ArrayList<NameValuePair>();

@@ -24,7 +24,7 @@ import java.util.Collection;
  */
 public class CustomProducer extends AbstractProducer {
 	//private final String headerFormat;
-	private final String desURL;
+	private final String[] duPairs;
 	private final String[] fieldsExcluded;
 	private final Collection<RowMap> txRows = new ArrayList<>();
 	private final HttpUtil httpUtil=new HttpUtil();
@@ -36,7 +36,7 @@ public class CustomProducer extends AbstractProducer {
 		// this property would be 'custom_producer.header_format' in config.properties
 		//headerFormat = context.getConfig().customProducerProperties.getProperty("header_format", "Transaction: %xid% >>>\n");
 		// this property would be 'custom_producer.destination_URL' in config.properties
-		desURL = context.getConfig().customProducerProperties.getProperty("destination_URL");
+		duPairs = context.getConfig().customProducerProperties.getProperty("DB_URL_pairs").split(",");
 		fieldsExcluded = context.getConfig().customProducerProperties.getProperty("fieldsExcluded").split(",");
 		server_id=context.getConfig().customProducerProperties.getProperty("server_id");
 		
@@ -66,11 +66,12 @@ public class CustomProducer extends AbstractProducer {
 			/*
 			 * try to implement posting
 			 */
-			httpUtil.doPost(desURL, r, fieldsExcluded);
+			for (String pair: duPairs) {
+				httpUtil.doPost(pair.split("\\|"), r, fieldsExcluded);
+			}
 			
 			//System.out.println(r.getRowType() + ":" + r.getData().toString());
 			//System.out.println(getDesURL());
-			System.out.print("pushed: ");
 			txRows.stream()
 				.map(CustomProducer::toJSON)
 				.forEach(System.out::println);
@@ -82,8 +83,8 @@ public class CustomProducer extends AbstractProducer {
 		}		
 	}
 	
-	public String getDesURL() {
-		return desURL;
+	public String[] getDUPairs() {
+		return duPairs;
 	}
 	
 	private static String toJSON(RowMap row) {
