@@ -25,6 +25,7 @@ import java.util.Collection;
 public class CustomProducer extends AbstractProducer {
 	//private final String headerFormat;
 	private final String desURL;
+	private final String[] fieldsExcluded;
 	private final Collection<RowMap> txRows = new ArrayList<>();
 	private final HttpUtil httpUtil=new HttpUtil();
 	private static MaxwellOutputConfig config=new MaxwellOutputConfig();
@@ -36,6 +37,7 @@ public class CustomProducer extends AbstractProducer {
 		//headerFormat = context.getConfig().customProducerProperties.getProperty("header_format", "Transaction: %xid% >>>\n");
 		// this property would be 'custom_producer.destination_URL' in config.properties
 		desURL = context.getConfig().customProducerProperties.getProperty("destination_URL");
+		fieldsExcluded = context.getConfig().customProducerProperties.getProperty("fieldsExcluded").split(",");
 		server_id=context.getConfig().customProducerProperties.getProperty("server_id");
 		
 		config.includesServerId=true;
@@ -64,7 +66,7 @@ public class CustomProducer extends AbstractProducer {
 			/*
 			 * try to implement posting
 			 */
-			httpUtil.doPost(desURL, r.getData());
+			httpUtil.doPost(desURL, r, fieldsExcluded);
 			
 			//System.out.println(r.getRowType() + ":" + r.getData().toString());
 			//System.out.println(getDesURL());
@@ -90,5 +92,9 @@ public class CustomProducer extends AbstractProducer {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	public String[] getFieldsExcluded() {
+		return fieldsExcluded;
 	}
 }

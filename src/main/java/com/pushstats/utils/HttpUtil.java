@@ -3,8 +3,8 @@ package com.pushstats.utils;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -19,16 +19,24 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
+import com.zendesk.maxwell.row.RowMap;
+
 public class HttpUtil {
-	public void doPost(String url, LinkedHashMap<String, Object> params){
+	public void doPost(String url, RowMap row, String[] excluded){
 
         CloseableHttpClient httpclient = HttpClientBuilder.create().build();
         HttpPost post = new HttpPost(url);
         List<NameValuePair> formparams = new ArrayList<NameValuePair>();
-        Iterator<Entry<String, Object>> it = params.entrySet().iterator();
+        Iterator<Entry<String, Object>> it = row.getData().entrySet().iterator();
         while (it.hasNext()) {
         	Entry<String, Object>entry = it.next();
-        	formparams.add(new BasicNameValuePair(entry.getKey(), entry.getValue().toString()));
+        	if (excluded == null) {
+        		formparams.add(new BasicNameValuePair(entry.getKey(), entry.getValue().toString()));
+        	} else {
+        		if (!Arrays.asList(excluded).contains(row.getDatabase() + "." + row.getTable() + "." + entry.getKey())) {
+        			formparams.add(new BasicNameValuePair(entry.getKey(), entry.getValue().toString()));
+        		}
+        	}
         }
         UrlEncodedFormEntity uefEntity;
         try {
